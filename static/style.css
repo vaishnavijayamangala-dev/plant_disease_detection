@@ -1,0 +1,48 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #6dbf5d, #9fd66d);
+}
+
+/* CENTER LOGIN + SIGNUP */
+.center-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* CARD */
+.auth-card {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+}
+
+/* FORM */
+.form-group {
+    margin: 10px 0;
+    text-align: left;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+/* BUTTON */
+.btn {
+    background: green;
+    color: white;
+    padding: 10px;
+    border: none;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.full-width {
+    width: 100%;
+}

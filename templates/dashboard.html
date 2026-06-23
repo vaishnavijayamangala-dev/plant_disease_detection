@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{background: linear-gradient(135deg,#1d3557,#457b9d);color:white;}
+
+.navbar{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:15px 40px;background:#0d1b2a;
+}
+
+.logout{
+    background:red;padding:8px 15px;border-radius:8px;
+    text-decoration:none;color:white;
+}
+
+.container{display:flex;gap:30px;padding:40px;}
+
+.card,.history{
+    background:rgba(255,255,255,0.1);
+    padding:30px;border-radius:15px;width:50%;
+}
+
+button{
+    padding:10px 25px;border:none;border-radius:20px;
+    background:#2ecc71;color:white;cursor:pointer;
+}
+
+img{margin-top:20px;width:200px;border-radius:10px;}
+
+.bar{background:#ccc;border-radius:10px;overflow:hidden;margin-top:10px;}
+.bar-fill{height:15px;background:#2ecc71;}
+
+/* Chatbot */
+#chatbot-btn{
+    position:fixed;bottom:20px;right:20px;
+    background:#2ecc71;padding:15px;border-radius:50%;cursor:pointer;
+}
+
+#chatbot-box{
+    position:fixed;bottom:80px;right:20px;width:300px;
+    background:white;color:black;border-radius:10px;
+    display:none;flex-direction:column;
+}
+
+#chatbot-header{
+    background:#2ecc71;color:white;padding:10px;
+    display:flex;justify-content:space-between;
+}
+
+#chatbot-messages{
+    height:200px;overflow-y:auto;padding:10px;
+}
+
+#chatbot-input{display:flex;}
+#chatbot-input input{flex:1;padding:10px;}
+</style>
+
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <h2>🌿 Plant AI</h2>
+    <div>
+        Hello {{user}} |
+        <a href="/logout" class="logout">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+
+<!-- LEFT -->
+<div class="card">
+    <h2>Upload Leaf Image</h2>
+
+    <form id="uploadForm">
+        <input type="file" id="imageInput" required><br>
+        <button type="submit">Predict</button>
+    </form>
+
+    <img id="preview" style="display:none;">
+    <div id="result"></div>
+</div>
+
+<!-- RIGHT -->
+<div class="history">
+    <h3>📊 Prediction History</h3>
+
+    {% if history %}
+        {% for item in history[::-1] %}
+        <div style="margin-bottom:15px;padding:10px;border-bottom:1px solid #ccc;">
+
+            <img src="{{item.image_path}}" width="80" style="border-radius:8px;"><br>
+
+            <b>🌱 {{item.disease}}</b><br>
+            Confidence: {{item.confidence}}%<br>
+
+            <small>
+                📝 {{item.description}}<br>
+                💊 {{item.treatment}}<br>
+                🌾 {{item.fertilizer}}<br>
+                🌦 {{item.weather}}
+            </small>
+
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No history yet</p>
+    {% endif %}
+</div>
+
+</div>
+
+<div id="chatbot-btn">💬</div>
+
+<div id="chatbot-box">
+    <div id="chatbot-header"
+        <span onclick="toggleChatbot()">❌</span>
+    </div>
+
+    <div id="chatbot-messages"></div>
+
+    <div id="chatbot-input">
+        <input type="text" id="userInput" placeholder="Ask something...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<script>
+
+const form = document.getElementById("uploadForm");
+const preview = document.getElementById("preview");
+const resultDiv = document.getElementById("result");
+
+form.onsubmit = async (e)=>{
+    e.preventDefault();
+
+    const file = document.getElementById("imageInput").files[0];
+
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+
+    const fd = new FormData();
+    fd.append("file", file);
+
+    const res = await fetch("/predict",{method:"POST",body:fd});
+    const data = await res.json();
+    if (!data.disease) {
+    resultDiv.innerHTML = "<p style='color:red;'>Prediction failed</p>";
+    return;
+    }
+
+    resultDiv.innerHTML = `
+        <h3>🌱 Disease: ${data.disease}</h3>
+        <p><b>Confidence:</b> ${data.confidence}%</p>
+
+        <div class="bar">
+            <div class="bar-fill" style="width:${data.confidence}%"></div>
+        </div>
+
+        <p><b>Description:</b> ${data.description}</p>
+        <p><b>Treatment:</b> ${data.treatment}</p>
+        <p><b>Fertilizer:</b> ${data.fertilizer}</p>
+        <p><b>Weather:</b> ${data.weather}</p>
+
+        <a href="/download_report" target="_blank">
+    <button style="margin-top:10px;">📄 Download Report</button>
+</a>
+    `;
+}
+
+function downloadPDF(){
+    window.open("/download_report", "_blank");
+}
+
+function toggleChatbot(){
+    const box=document.getElementById("chatbot-box");
+    box.style.display = box.style.display==="flex"?"none":"flex";
+}
+
+document.getElementById("chatbot-btn").onclick=toggleChatbot;
+
+async function sendMessage(){
+    const input = document.getElementById("userInput");
+    const msg = input.value;
+    const chat = document.getElementById("chatbot-messages");
+
+    if(msg==="") return;
+
+    chat.innerHTML += `<p><b>You:</b> ${msg}</p>`;
+
+    const res = await fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({message: msg})
+    });
+
+    const data = await res.json();
+
+    chat.innerHTML += `<p><b>Bot:</b> ${data.reply}</p>`;
+    chat.scrollTop = chat.scrollHeight;
+
+    input.value="";
+}
+
+</script>
+
+</body>
+</html>

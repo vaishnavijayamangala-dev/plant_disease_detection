@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Plant Disease Detection</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)),
+                        url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(0,0,0,0.6);
+            padding: 50px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin-bottom: 30px;
+            font-size: 18px;
+            color: #ddd;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            margin: 10px;
+            border-radius: 30px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .login {
+            background: #4CAF50;
+        }
+
+        .signup {
+            background: #2ecc71;
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>🌿 Plant Disease Detection</h1>
+    <p>Upload leaf images & detect diseases instantly using AI</p>
+
+    <a href="/login" class="btn login">Login</a>
+    <a href="/signup" class="btn signup">Signup</a>
+</div>
+
+</body>
+</html>
