@@ -263,22 +263,19 @@ This project uses API keys for some integrations.
 Store sensitive values such as API keys and secret keys in a `.env` file and **never upload them publicly** to GitHub.
 
 ---
-
 ## 📷 Screenshots
 
-You can add screenshots of your application here.
+### Login Page
+![Login Page](screenshots/login.jpeg)
 
-Example:
-
-```md
-## Screenshots
-
-### Home Page
-![Home Page](screenshots/home.png)
+### Upload Page
+![Upload Page](screenshots/upload.jpeg)
 
 ### Prediction Page
-![Prediction Page](screenshots/prediction.png)
-```
+![Prediction Page](screenshots/prediction.jpeg)
+
+### Report Page
+![Report Page](screenshots/report.jpeg)
 
 ---
 
